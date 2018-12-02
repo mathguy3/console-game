@@ -9,29 +9,14 @@ const localization = {
 	command: "What's next?",
 }
 
-var storage = require('./storage.js');
+const storage = require('./storage.js');
+const map = require('./map.js');
+const util = require('./util.js');
 
 function getParam(str) {
 	let sp = str.indexOf(" ");
 	sp = sp == -1 ? str.length : sp;
 	return { param: str.substr(0, sp), str: str.substr(sp) }	
-}
-
-function genWeightedRand(spec) {
-  	var i, j, table=[];
-  	for (i in spec) {
-		for (j=0; j<spec[i]*10; j++) {
-			table.push(i);
-		}
-	}
-	console.log(table);
-	return function() {
-		return table[Math.floor(Math.random() * table.length)];
-	}
-}
-
-function roll() {
-	return !!parseInt(genWeightedRand({0:.5,1:.5})());
 }
 
 function developer() {
@@ -58,8 +43,12 @@ async function applyCommand(com) {
 	({ param: param2, str } = getParam(str));
 
 	switch (act) {
+		case "map":
+			map.render();
+			break;
 		case "roll":
 			console.log(roll());
+			break;
 		case "get":
 			//addToInventory(param1);
 			break;
@@ -142,8 +131,8 @@ const output = (str) => {
 
 async function main() {	
 	process.stdout.write('\x1Bc')
-	output(localization.intro);
-	output(storage);
+	//output(localization.intro);
+	output(map.init());
 	//initMap(); 
 	//var timerId = setInterval(tick, 1000);
 	let shouldQuit = false; 
@@ -157,4 +146,3 @@ async function main() {
 }
 
 main();
-
